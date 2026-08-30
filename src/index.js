@@ -5,18 +5,19 @@ class Task {
     constructor(title, description, dueDate, priority) {
         this.title = title;
         this.description = description;
-        this.dueDate = dueDate;
+        this.dueDate = new Date(dueDate);
         this.priority = priority;
         this.completed = false;
 
     }
 
-    formattedDate() {
-        return format(this.dueDate, "MM/dd/yyyy");
-    }
     toggleComplete() {
         this.completed = !this.completed;
     }
+
+    formattedDate() {
+    return format(this.dueDate, "MM/dd/yyyy");
+}
 
     changePriority() {
         const taskPriority = ["High", "Medium", "Low"];
@@ -31,7 +32,7 @@ class Task {
 
 class Project {
     constructor(name) {
-        this.name = name,
+        this.name = name;
         this.tasks = [];
     }
 
@@ -52,6 +53,29 @@ class Project {
 
 }
 
+class ProjectManager {
+    constructor() {
+        this.projects = []
+    }
+
+    addProject(project) {
+        this.projects.push(project)
+    }
+
+    removeProject(project){
+        const index = this.projects.indexOf(project);
+        this.projects.splice(index, 1);
+    }
+
+    findProject(name){
+        return this.projects.find(project => {
+            return project.name === name
+        })
+    }
+}
+
+const manager = new ProjectManager();
+
 
 
 
@@ -70,14 +94,13 @@ const task2 = new Task(
 );
 
 const webDev = new Project("Web Dev");
+const guitar = new Project("Guitar");
+manager.addProject(guitar);
 
-webDev.addTask(task1);
-webDev.addTask(task2);
-console.log(webDev);
-console.log(webDev.tasks);
-
-const foundTask = webDev.findTask("Study JavaScript");
-console.log(foundTask);
+const foundProject = manager.findProject("Guitar");
+console.log(foundProject);
+manager.removeProject(guitar);
+console.log(manager.projects);
 
 
 
