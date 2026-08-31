@@ -1,106 +1,30 @@
 import "./styles.css";
 import { format } from "date-fns";
+import { ProjectManager } from "./ProjectManager.js";
+import  { Task } from "./Task.js";
+import { Project } from "./Project.js";
 
-class Task {
-    constructor(title, description, dueDate, priority) {
-        this.title = title;
-        this.description = description;
-        this.dueDate = new Date(dueDate);
-        this.priority = priority;
-        this.completed = false;
+const projectManager = new ProjectManager();
 
+function loadManager() {
+    const saved = localStorage.getItem("projectManager");
+    if (saved) {
+        const data = JSON.parse(saved);
+        return ProjectManager.fromJSON(data);
     }
-
-    toggleComplete() {
-        this.completed = !this.completed;
-    }
-
-    formattedDate() {
-    return format(this.dueDate, "MM/dd/yyyy");
-}
-
-    changePriority() {
-        const taskPriority = ["High", "Medium", "Low"];
-        let currentIndex = taskPriority.indexOf(this.priority);
-        currentIndex = (currentIndex + 1) % taskPriority.length;
-        this.priority = taskPriority[currentIndex];
-        return this.priority;
-        
-  }
+    return new ProjectManager();
 
 }
 
-class Project {
-    constructor(name) {
-        this.name = name;
-        this.tasks = [];
-    }
+const localManager = loadManager();
 
-    addTask(task) {
-        this.tasks.push(task);
-    }
-
-    removeTask(task){
-    const index = this.tasks.indexOf(task);
-    this.tasks.splice(index, 1);
-  }
-
-    findTask(title) {
-    return  this.tasks.find(task => {
-      return task.title === title;
-    })
-  }
-
-}
-
-class ProjectManager {
-    constructor() {
-        this.projects = []
-    }
-
-    addProject(project) {
-        this.projects.push(project)
-    }
-
-    removeProject(project){
-        const index = this.projects.indexOf(project);
-        this.projects.splice(index, 1);
-    }
-
-    findProject(name){
-        return this.projects.find(project => {
-            return project.name === name
-        })
-    }
-}
-
-const manager = new ProjectManager();
+localStorage.setItem("projects", JSON.stringify(projectManager.projects));
 
 
 
 
-const task1 = new Task(
-        "Finish Todo App",
-        "Finish Odin Webpack Project",
-        "2026-09-05",
-        "High"
-);
 
-const task2 = new Task(
-    "Study JavaScript",
-    "Practice OOP",
-    "2026-09-06",
-    "Medium"
-);
-
-const webDev = new Project("Web Dev");
-const guitar = new Project("Guitar");
-manager.addProject(guitar);
-
-const foundProject = manager.findProject("Guitar");
-console.log(foundProject);
-manager.removeProject(guitar);
-console.log(manager.projects);
+console.log(projectManager);
 
 
 
