@@ -7,7 +7,18 @@
 </head>
 <body>
     <div id="sidebar"></div>
-    <div id="main-content"></div>
+    <div id="main-content">
+        <dialog id="add-project-dialog">
+            <form id="add-project-form">
+                <label for="project-name">Project Name:</label>
+                <input type="text" id="project-name" name="project-name" required>
+                <button type="submit">Add Project</button>
+                <button type="button" id="cancel-project-btn">Cancel</button>
+            </form>
+        </dialog>
+
+        <button id="new-project-btn">New Project</button>
+    </div>
     
 
     
