@@ -7,7 +7,13 @@
 </head>
 <body>
     <div id="sidebar"></div>
-    <div id="main-content">
+    <div id="main-content"> 
+
+            <button id="new-project-btn">New Project</button>
+            <button id="new-task-btn" disabled>New task</button>
+            <ul id="task-list"></ul>
+    </div>
+
         <dialog id="add-project-dialog">
             <form id="add-project-form">
                 <label for="project-name">Project Name:</label>
@@ -17,8 +23,30 @@
             </form>
         </dialog>
 
-        <button id="new-project-btn">New Project</button>
-    </div>
+          <dialog id="add-task-dialog">
+            <form id="add-task-form">
+                <label for="task-title">Title:</label>
+                <input type="text" id="task-title" name="task-title" required>
+
+                 <label for="task-description">Description:</label>
+                <textarea id="task-description" name="task-description"></textarea>
+
+                 <label for="task-title">Due Date:</label>
+                <input type="date" id="task-due-date" name="task-due-date" required>
+
+                 <label for="task-title">Priority:</label>
+                <select id="task-priority" name="task-priority" required>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                    </select>
+
+
+
+                <button type="submit">Add task</button>
+                <button type="button" id="cancel-task-btn">Cancel</button>
+            </form>
+        </dialog>
     
 
     

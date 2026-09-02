@@ -1,8 +1,8 @@
-export { renderProjectList, renderTaskList, selectProject, showProjectDialog }
-export { initProjectDialog }
+export { renderProjectList, renderTaskList, selectProject, showProjectDialog, initProjectDialog, initTaskDialog, taskList }
 import { ProjectManager } from "./ProjectManager.js";
 import { Project } from "./Project.js";
 import { saveToStorage } from "./storage.js";
+import { Task } from "./Task.js";
 
 const sidebar = document.querySelector("#sidebar");
 const mainContent = document.querySelector("#main-content");
@@ -10,6 +10,8 @@ const projectDialog = document.querySelector("#add-project-dialog");
 const projectForm = document.querySelector("#add-project-form");
 const newProjectBtn = document.querySelector("#new-project-btn");
 const cancelProjectBtn = document.querySelector("#cancel-project-btn");
+const newTaskBtn = document.querySelector("#new-task-btn");
+const taskList = document.querySelector("#task-list");
 
 let currentProject = null;
 
@@ -43,6 +45,7 @@ function renderTaskList(project, container) {
 function selectProject(project, taskContainer) {
     currentProject = project;
     renderTaskList(project, taskContainer);
+    newTaskBtn.disabled = false;
 }
 
 function showProjectDialog() {
@@ -51,6 +54,11 @@ function showProjectDialog() {
 
  function hideProjectDialog() {
     projectDialog.close();
+ }
+
+ function hideTaskDialog() {
+    const taskDialog = document.querySelector("#add-task-dialog");
+    taskDialog.close();
  }
 
 
@@ -74,6 +82,48 @@ function showProjectDialog() {
             nameInput.value = "";
             hideProjectDialog();
         });
+}
+
+function initTaskDialog(manager) {
+    const taskDialog = document.querySelector("#add-task-dialog");
+    const taskForm = document.querySelector("#add-task-form");
+    const cancelTaskBtn = document.querySelector("#cancel-task-btn");
+
+    newTaskBtn.addEventListener("click" , () => {
+        if (!currentProject) {
+            alert("Select a project first.");
+            return;
+        }
+        taskDialog.showModal();
+    });
+
+    cancelTaskBtn.addEventListener("click", () => {
+        hideTaskDialog();
+    });
+    
+    taskForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const titleInput = document.querySelector("#task-title");
+        const descriptionInput = document.querySelector("#task-description");
+        const dueDate = document.querySelector("#task-due-date");
+        const taskPriority = document.querySelector("#task-priority");
+        
+        const task = new Task(
+            titleInput.value,
+            descriptionInput.value,
+            dueDate.value,
+            taskPriority.value
+        );
+        currentProject.addTask(task);
+        saveToStorage(manager);
+        renderTaskList(currentProject, taskList)
+
+        titleInput.value = "";
+        descriptionInput.value = "";
+        dueDate.value = "";
+        hideTaskDialog();
+        });
+
 }
 
 
