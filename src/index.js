@@ -24,5 +24,6 @@ initTaskDialog(manager);
 
 console.log(manager);
 console.log(manager.getAllProjects());
+console.log(manager.findProject("Guitar").tasks[0].completed);
 
 

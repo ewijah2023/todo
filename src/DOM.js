@@ -68,7 +68,18 @@ function renderTaskList(project, container) {
 
         const checkBoxLabel = document.createElement("label");
         checkBoxLabel.htmlFor = `completed-${i}`;
-        checkBoxLabel.textContent = tasks[i].completed ?  " - Completed" : " - Not completed"
+        checkBoxLabel.textContent = tasks[i].completed ?  " - Completed" : " - Not completed";
+
+        const prioButton = document.createElement("button");
+        prioButton.textContent = `${tasks[i].priority}`
+
+        prioButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            tasks[i].changePriority();
+            
+            saveToStorage(currentManager)
+            renderTaskList(project, container);
+        })
 
         checkBox.addEventListener("change", () => {
             tasks[i].toggleComplete();
@@ -83,6 +94,7 @@ function renderTaskList(project, container) {
             renderTaskList(project, container);
         });
 
+        listItem.appendChild(prioButton);
         listItem.appendChild(checkBoxLabel);
         listItem.appendChild(checkBox);
         listItem.appendChild(deleteBtn);
