@@ -61,6 +61,21 @@ function renderTaskList(project, container) {
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
         
+        const checkBox = document.createElement("input");
+        checkBox.type = "checkbox";
+        checkBox.id = `completed-${i}`;
+        checkBox.checked = tasks[i].completed;
+
+        const checkBoxLabel = document.createElement("label");
+        checkBoxLabel.htmlFor = `completed-${i}`;
+        checkBoxLabel.textContent = tasks[i].completed ?  " - Completed" : " - Not completed"
+
+        checkBox.addEventListener("change", () => {
+            tasks[i].toggleComplete();
+            saveToStorage(currentManager);
+             renderTaskList(project, container);
+        })
+        
         deleteBtn.addEventListener("click", (event) => {
             event.stopPropagation();
             project.removeTask(tasks[i].title);
@@ -68,6 +83,8 @@ function renderTaskList(project, container) {
             renderTaskList(project, container);
         });
 
+        listItem.appendChild(checkBoxLabel);
+        listItem.appendChild(checkBox);
         listItem.appendChild(deleteBtn);
         container.appendChild(listItem);
 

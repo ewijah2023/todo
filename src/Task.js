@@ -30,6 +30,7 @@ class Task {
 
   static fromJSON(data) {
     const task = new Task(data.title, data.description, data.dueDate, data.priority);
+    task.dueDate = new Date(data.dueDate);
     task.completed = data.completed
     return task;
   }
