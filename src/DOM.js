@@ -12,6 +12,8 @@ const newProjectBtn = document.querySelector("#new-project-btn");
 const cancelProjectBtn = document.querySelector("#cancel-project-btn");
 const newTaskBtn = document.querySelector("#new-task-btn");
 const taskList = document.querySelector("#task-list");
+
+let expandedTasks = new Set();
 let currentProject = null;
 let currentManager = null;
 
@@ -60,6 +62,18 @@ function renderTaskList(project, container) {
         listItem.textContent = ` ${tasks[i].title} - ${tasks[i].formattedDate()};`
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
+
+        const isExpanded = expandedTasks.has(tasks[i].title);
+  
+
+        listItem.addEventListener("click", () =>{
+            if (expandedTasks.has(tasks[i].title)){
+                expandedTasks.delete(tasks[i].title);
+            } else {
+                expandedTasks.add(tasks[i].title);
+            }
+            renderTaskList(project, container);
+        });
         
         const checkBox = document.createElement("input");
         checkBox.type = "checkbox";
@@ -76,12 +90,13 @@ function renderTaskList(project, container) {
         prioButton.addEventListener("click", (event) => {
             event.stopPropagation();
             tasks[i].changePriority();
-            
+
             saveToStorage(currentManager)
             renderTaskList(project, container);
         })
 
-        checkBox.addEventListener("change", () => {
+        checkBox.addEventListener("change", (event) => {
+            event.stopPropagation();
             tasks[i].toggleComplete();
             saveToStorage(currentManager);
              renderTaskList(project, container);
@@ -93,6 +108,12 @@ function renderTaskList(project, container) {
             saveToStorage(currentManager)
             renderTaskList(project, container);
         });
+
+        if (isExpanded) {
+            const detailBlock = document.createElement("div");
+            detailBlock.textContent = `${tasks[i].description} | Priority: ${tasks[i].priority}`;
+            listItem.appendChild(detailBlock);
+        }
 
         listItem.appendChild(prioButton);
         listItem.appendChild(checkBoxLabel);
