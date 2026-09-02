@@ -1,4 +1,4 @@
-export { renderProjectList, renderTaskList, selectProject, showProjectDialog, initProjectDialog, initTaskDialog, taskList }
+export { renderProjectList, renderTaskList, selectProject, showProjectDialog, initProjectDialog, initTaskDialog, taskList, initManager }
 import { ProjectManager } from "./ProjectManager.js";
 import { Project } from "./Project.js";
 import { saveToStorage } from "./storage.js";
@@ -12,8 +12,12 @@ const newProjectBtn = document.querySelector("#new-project-btn");
 const cancelProjectBtn = document.querySelector("#cancel-project-btn");
 const newTaskBtn = document.querySelector("#new-task-btn");
 const taskList = document.querySelector("#task-list");
-
 let currentProject = null;
+let currentManager = null;
+
+function initManager(manager) {
+    currentManager = manager;
+}
 
 function renderProjectList(manager, container, taskContainer) {
     container.innerHTML = "";
@@ -21,7 +25,25 @@ function renderProjectList(manager, container, taskContainer) {
     for (let i = 0; i < projects.length; i++) {
         const listItem = document.createElement("li");
         listItem.textContent = projects[i].name;
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            manager.removeProject(projects[i].name);
+            saveToStorage(currentManager)
+
+            if (currentProject === projects[i]) {
+                currentProject = null;
+                taskContainer.innerHTML = "";
+                newTaskBtn.disabled = true;
+            }
+
+            renderProjectList(manager, container, taskContainer);
+        });
+
+        listItem.appendChild(deleteBtn);
         container.appendChild(listItem);
+
         listItem.addEventListener("click", () => {
             selectProject(projects[i], taskContainer);
         })
@@ -36,6 +58,17 @@ function renderTaskList(project, container) {
     for (let i = 0; i < tasks.length; i++) {
         const listItem = document.createElement("li");
         listItem.textContent = ` ${tasks[i].title} - ${tasks[i].formattedDate()};`
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        
+        deleteBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            project.removeTask(tasks[i].title);
+            saveToStorage(currentManager)
+            renderTaskList(project, container);
+        });
+
+        listItem.appendChild(deleteBtn);
         container.appendChild(listItem);
 
     }
@@ -78,7 +111,7 @@ function showProjectDialog() {
             const project = new Project(nameInput.value)
             manager.addProject(project);
             saveToStorage(manager);
-            renderProjectList(manager, sidebar, mainContent);
+            renderProjectList(manager, sidebar, taskList);
             nameInput.value = "";
             hideProjectDialog();
         });
