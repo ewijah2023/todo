@@ -27,6 +27,12 @@ function renderProjectList(manager, container, taskContainer) {
     for (let i = 0; i < projects.length; i++) {
         const listItem = document.createElement("li");
         listItem.textContent = projects[i].name;
+        
+        if (projects[i] === currentProject) {
+            listItem.classList.add("selected");
+        }
+
+
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
         deleteBtn.addEventListener("click", (event) => {
@@ -59,7 +65,12 @@ function renderTaskList(project, container) {
 
     for (let i = 0; i < tasks.length; i++) {
         const listItem = document.createElement("li");
-        listItem.textContent = ` ${tasks[i].title} - ${tasks[i].formattedDate()};`
+        const taskCard = document.createElement("div");
+        taskCard.classList.add("task-card");
+
+        const titleText = document.createElement("span");
+        titleText.textContent = `${tasks[i].title} - ${tasks[i].formattedDate()}`;
+        
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
 
@@ -109,16 +120,22 @@ function renderTaskList(project, container) {
             renderTaskList(project, container);
         });
 
+        taskCard.appendChild(titleText);
+        taskCard.appendChild(prioButton);
+        taskCard.appendChild(checkBoxLabel);
+        taskCard.appendChild(checkBox);
+        taskCard.appendChild(deleteBtn);
+
+
+
         if (isExpanded) {
             const detailBlock = document.createElement("div");
-            detailBlock.textContent = `${tasks[i].description} | Priority: ${tasks[i].priority}`;
-            listItem.appendChild(detailBlock);
+            detailBlock.classList.add("task-detail");
+            detailBlock.textContent = `${tasks[i].description}`;
+            taskCard.appendChild(detailBlock);
         }
 
-        listItem.appendChild(prioButton);
-        listItem.appendChild(checkBoxLabel);
-        listItem.appendChild(checkBox);
-        listItem.appendChild(deleteBtn);
+        listItem.appendChild(taskCard);
         container.appendChild(listItem);
 
     }
@@ -129,6 +146,7 @@ function selectProject(project, taskContainer) {
     currentProject = project;
     renderTaskList(project, taskContainer);
     newTaskBtn.disabled = false;
+    renderProjectList(currentManager, sidebar, taskContainer);
 }
 
 function showProjectDialog() {
@@ -208,6 +226,7 @@ function initTaskDialog(manager) {
         });
 
 }
+
 
 
 
