@@ -15,8 +15,6 @@ const mainContent = document.getElementById("main-content");
 
 renderProjectList(manager, sidebar, taskList);
 
-const firstProject = manager.getAllProjects()[0];
-
 initProjectDialog(manager);
 initTaskDialog(manager);
 

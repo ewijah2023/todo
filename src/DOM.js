@@ -70,7 +70,7 @@ function renderTaskList(project, container) {
 
         const titleText = document.createElement("span");
         titleText.textContent = `${tasks[i].title} - ${tasks[i].formattedDate()}`;
-        
+
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
 
@@ -105,6 +105,10 @@ function renderTaskList(project, container) {
             saveToStorage(currentManager)
             renderTaskList(project, container);
         })
+
+        checkBox.addEventListener("click", (event) => {
+                event.stopPropagation();
+            });
 
         checkBox.addEventListener("change", (event) => {
             event.stopPropagation();
