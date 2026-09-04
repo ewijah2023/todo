@@ -5,5 +5,6 @@ export default merge(common, {
     mode: "production",
     output: {
         filename: "[name].[contenthash].js",
+        publicPath: "/ewijah2023/todo"
     },
 });
